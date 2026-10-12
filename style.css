@@ -229,17 +229,238 @@ main {
     margin-top: 1.4rem;
 }
 
-main .date {
+/*================= UNTITLED UI DATEPICKER =================*/
+.custom-datepicker {
+    position: relative;
     display: inline-block;
-    background: var(--color-light);
-    border-radius: var(--border-radius-1);
     margin-top: 1rem;
-    padding: 0.5rem 1.6rem;
+    margin-bottom: 0.5rem;
+    user-select: none;
+    font-family: inherit;
 }
 
-main .date input[type="date"] {
-    background: transparent;
+.datepicker-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: var(--color-white);
     color: var(--color-dark);
+    padding: 0.6rem 1.1rem;
+    border-radius: var(--border-radius-2);
+    border: 1px solid var(--color-info-light);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 500;
+    font-family: inherit;
+    transition: all 200ms ease;
+}
+
+.datepicker-trigger:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 6px rgba(115, 128, 236, 0.15);
+}
+
+.datepicker-trigger.open {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(115, 128, 236, 0.2);
+}
+
+.datepicker-trigger .datepicker-icon {
+    font-size: 1.15rem;
+    color: var(--color-info-dark);
+    transition: color 200ms ease;
+}
+
+.datepicker-trigger:hover .datepicker-icon,
+.datepicker-trigger.open .datepicker-icon {
+    color: var(--color-primary);
+}
+
+.datepicker-trigger .datepicker-value {
+    color: var(--color-dark);
+    font-weight: 500;
+}
+
+.datepicker-trigger .datepicker-chevron {
+    font-size: 1.2rem;
+    color: var(--color-info-dark);
+    transition: transform 250ms ease;
+}
+
+.datepicker-trigger.open .datepicker-chevron {
+    transform: rotate(180deg);
+    color: var(--color-primary);
+}
+
+/* Datepicker Floating Popover */
+.datepicker-popover {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 290px;
+    background: var(--color-white);
+    border-radius: var(--border-radius-3);
+    border: 1px solid var(--color-info-light);
+    box-shadow: 0 1rem 2.5rem var(--color-light);
+    padding: 1.1rem;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.97);
+    transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+.datepicker-popover.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.dark-theme-variables .datepicker-trigger,
+.dark-theme-variables .datepicker-popover {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Header (Month & Year navigation) */
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+}
+
+.calendar-month-year {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--color-dark);
+}
+
+.calendar-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border-radius: var(--border-radius-1);
+    color: var(--color-info-dark);
+    cursor: pointer;
+    transition: all 150ms ease;
+}
+
+.calendar-nav-btn:hover {
+    background: var(--color-light);
+    color: var(--color-primary);
+}
+
+.calendar-nav-btn span {
+    font-size: 1.15rem;
+}
+
+/* Weekdays */
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 0.4rem;
+}
+
+.calendar-weekdays span {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-info-dark);
+    padding: 0.2rem 0;
+}
+
+/* Days Grid */
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    row-gap: 4px;
+    column-gap: 2px;
+}
+
+.calendar-day-btn {
+    width: 34px;
+    height: 34px;
+    margin: 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border-radius: 50%;
+    color: var(--color-dark);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 150ms ease;
+    border: 1px solid transparent;
+}
+
+.calendar-day-btn:hover:not(.selected) {
+    background: var(--color-light);
+    color: var(--color-primary);
+}
+
+.calendar-day-btn.other-month {
+    color: var(--color-info-dark);
+    opacity: 0.35;
+}
+
+.calendar-day-btn.today:not(.selected) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.calendar-day-btn.selected {
+    background: var(--color-primary) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(115, 128, 236, 0.45);
+}
+
+/* Footer Actions */
+.calendar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.9rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-light);
+}
+
+.calendar-btn-clear,
+.calendar-btn-today {
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--border-radius-1);
+    transition: all 150ms ease;
+}
+
+.calendar-btn-clear {
+    color: var(--color-info-dark);
+}
+
+.calendar-btn-clear:hover {
+    color: var(--color-danger);
+    background: rgba(255, 119, 130, 0.1);
+}
+
+.calendar-btn-today {
+    color: var(--color-primary);
+    background: var(--color-light);
+}
+
+.calendar-btn-today:hover {
+    background: var(--color-primary);
+    color: #ffffff;
 }
 
 main .insights {
@@ -823,21 +1044,10 @@ main .recent-orders .search-wrapper input {
   body {
     overflow-x: hidden;
   }
-    main .date {
-    display: block;
-    width: fit-content;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding: 0.8rem 1rem;
-    background: var(--color-light);
-    border-radius: var(--border-radius-1);
-  }
-
-  main .date input[type="date"] {
-    width: 120px;
-    padding: 0.5rem;
-    font-size: 1rem;
-    background: transparent;
-    color: var(--color-dark);
-  }
+    .custom-datepicker {
+        display: block;
+        width: fit-content;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
 }

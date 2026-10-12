@@ -67,6 +67,7 @@
 
     function setupOrderSearch() {
         const searchInput = document.getElementById('order-search');
+        if (!searchInput) return;
         searchInput.addEventListener('keyup', () => {
             const searchTerm = searchInput.value.toLowerCase();
             const filteredOrders = Orders.filter(order =>
@@ -76,9 +77,208 @@
         });
     }
 
+    function setupDatePicker() {
+        const datepicker = document.getElementById('custom-datepicker');
+        const trigger = document.getElementById('datepicker-trigger');
+        const popover = document.getElementById('datepicker-popover');
+        const valueSpan = document.getElementById('datepicker-value');
+        const monthYearSpan = document.getElementById('calendar-month-year');
+        const daysContainer = document.getElementById('calendar-days');
+        const prevBtn = document.getElementById('prev-month-btn');
+        const nextBtn = document.getElementById('next-month-btn');
+        const todayBtn = document.getElementById('calendar-today-btn');
+        const clearBtn = document.getElementById('calendar-clear-btn');
+
+        if (!datepicker || !trigger || !popover) return;
+
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const shortMonths = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
+        const today = new Date();
+        let selectedDate = new Date(); // Default selected today
+        let currentMonth = selectedDate.getMonth();
+        let currentYear = selectedDate.getFullYear();
+
+        function formatDate(d) {
+            if (!d) return "Pick a date";
+            return `${shortMonths[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+        }
+
+        // Set initial trigger text
+        valueSpan.textContent = formatDate(selectedDate);
+
+        function togglePopover(show) {
+            const isOpen = show !== undefined ? show : !popover.classList.contains('open');
+            if (isOpen) {
+                popover.classList.add('open');
+                trigger.classList.add('open');
+                trigger.setAttribute('aria-expanded', 'true');
+            } else {
+                popover.classList.remove('open');
+                trigger.classList.remove('open');
+                trigger.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        function renderCalendar() {
+            monthYearSpan.textContent = `${months[currentMonth]} ${currentYear}`;
+            daysContainer.innerHTML = '';
+
+            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+            const totalDaysCurrent = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const totalDaysPrev = new Date(currentYear, currentMonth, 0).getDate();
+
+            // Previous Month Days
+            for (let i = firstDayIndex - 1; i >= 0; i--) {
+                const dayNum = totalDaysPrev - i;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'calendar-day-btn other-month';
+                btn.textContent = dayNum;
+                btn.addEventListener('click', () => {
+                    currentMonth--;
+                    if (currentMonth < 0) {
+                        currentMonth = 11;
+                        currentYear--;
+                    }
+                    selectedDate = new Date(currentYear, currentMonth, dayNum);
+                    valueSpan.textContent = formatDate(selectedDate);
+                    renderCalendar();
+                    setTimeout(() => togglePopover(false), 150);
+                });
+                daysContainer.appendChild(btn);
+            }
+
+            // Current Month Days
+            for (let day = 1; day <= totalDaysCurrent; day++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'calendar-day-btn';
+                btn.textContent = day;
+
+                const isToday = (
+                    day === today.getDate() &&
+                    currentMonth === today.getMonth() &&
+                    currentYear === today.getFullYear()
+                );
+                if (isToday) btn.classList.add('today');
+
+                const isSelected = (
+                    selectedDate &&
+                    day === selectedDate.getDate() &&
+                    currentMonth === selectedDate.getMonth() &&
+                    currentYear === selectedDate.getFullYear()
+                );
+                if (isSelected) btn.classList.add('selected');
+
+                btn.addEventListener('click', () => {
+                    selectedDate = new Date(currentYear, currentMonth, day);
+                    valueSpan.textContent = formatDate(selectedDate);
+                    renderCalendar();
+                    setTimeout(() => togglePopover(false), 150);
+                });
+
+                daysContainer.appendChild(btn);
+            }
+
+            // Next Month Days (pad out to complete the row)
+            const totalRendered = firstDayIndex + totalDaysCurrent;
+            const remaining = (7 - (totalRendered % 7)) % 7;
+            for (let nextDay = 1; nextDay <= remaining; nextDay++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'calendar-day-btn other-month';
+                btn.textContent = nextDay;
+                btn.addEventListener('click', () => {
+                    currentMonth++;
+                    if (currentMonth > 11) {
+                        currentMonth = 0;
+                        currentYear++;
+                    }
+                    selectedDate = new Date(currentYear, currentMonth, nextDay);
+                    valueSpan.textContent = formatDate(selectedDate);
+                    renderCalendar();
+                    setTimeout(() => togglePopover(false), 150);
+                });
+                daysContainer.appendChild(btn);
+            }
+        }
+
+        // Trigger Click
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            togglePopover();
+        });
+
+        // Navigation
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        });
+
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        });
+
+        // Today button
+        todayBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectedDate = new Date();
+            currentMonth = selectedDate.getMonth();
+            currentYear = selectedDate.getFullYear();
+            valueSpan.textContent = formatDate(selectedDate);
+            renderCalendar();
+            setTimeout(() => togglePopover(false), 150);
+        });
+
+        // Clear button
+        clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectedDate = null;
+            valueSpan.textContent = "Pick a date";
+            renderCalendar();
+            setTimeout(() => togglePopover(false), 150);
+        });
+
+        // Outside Click Dismiss
+        document.addEventListener('click', (e) => {
+            if (!datepicker.contains(e.target)) {
+                togglePopover(false);
+            }
+        });
+
+        // ESC Key Dismiss
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                togglePopover(false);
+            }
+        });
+
+        // Initial render
+        renderCalendar();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         setupSidebar();
         setupThemeToggler();
+        setupDatePicker();
         populateOrdersTable();
         updateProgressCircles();
         setupOrderSearch();

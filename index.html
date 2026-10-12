@@ -72,8 +72,41 @@
         <main>
                 <h1>Dashboard</h1>
                 
-                <div class="date">
-                    <input type="date">
+                <div class="custom-datepicker" id="custom-datepicker">
+                    <button type="button" class="datepicker-trigger" id="datepicker-trigger" aria-haspopup="dialog" aria-expanded="false">
+                        <span class="material-symbols-sharp datepicker-icon">calendar_today</span>
+                        <span class="datepicker-value" id="datepicker-value">Pick a date</span>
+                        <span class="material-symbols-sharp datepicker-chevron">expand_more</span>
+                    </button>
+
+                    <div class="datepicker-popover" id="datepicker-popover" role="dialog" aria-modal="true" aria-label="Calendar">
+                        <div class="calendar-header">
+                            <button type="button" class="calendar-nav-btn" id="prev-month-btn" aria-label="Previous Month">
+                                <span class="material-symbols-sharp">chevron_left</span>
+                            </button>
+                            <span class="calendar-month-year" id="calendar-month-year">October 2026</span>
+                            <button type="button" class="calendar-nav-btn" id="next-month-btn" aria-label="Next Month">
+                                <span class="material-symbols-sharp">chevron_right</span>
+                            </button>
+                        </div>
+
+                        <div class="calendar-weekdays">
+                            <span>Su</span>
+                            <span>Mo</span>
+                            <span>Tu</span>
+                            <span>We</span>
+                            <span>Th</span>
+                            <span>Fr</span>
+                            <span>Sa</span>
+                        </div>
+
+                        <div class="calendar-days" id="calendar-days"></div>
+
+                        <div class="calendar-footer">
+                            <button type="button" class="calendar-btn-clear" id="calendar-clear-btn">Clear</button>
+                            <button type="button" class="calendar-btn-today" id="calendar-today-btn">Today</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="insights">
