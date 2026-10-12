@@ -779,7 +779,7 @@ main .insights > div:hover {
     box-shadow: none;
 }
 
-main .insights > div span {
+main .insights > div:not(.expense-kpi-card):not(.sales-kpi-card):not(.income-kpi-card) > span {
     background: var(--color-primary);
     padding: 0.5rem;
     border-radius: 50%;
@@ -787,11 +787,11 @@ main .insights > div span {
     font-size: 2rem;
 }
 
-main .insights > div.expenses span {
+main .insights > div.expenses:not(.expense-kpi-card) > span {
     background: var(--color-danger);
 }
 
-main .insights > div.income span {
+main .insights > div.income:not(.income-kpi-card) > span {
     background: var(--color-success);
 }
 
@@ -804,6 +804,634 @@ main .insights > div {
     justify-content: space-between;
     align-items: flex-start;
     height: 100%;
+}
+
+/*================= INTERACTIVE SALES KPI CARD =================*/
+main .insights > div.sales-kpi-card {
+    padding: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.6rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 275px;
+}
+
+/* Header */
+.sales-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.sales-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.sales-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.sales-tag .sales-mini-icon {
+    font-size: 1.15rem;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    color: var(--color-primary) !important;
+}
+
+.sales-tag h3 {
+    margin: 0 !important;
+    font-size: 0.82rem !important;
+    font-weight: 600;
+    color: var(--color-info-dark);
+}
+
+.sales-title-group h1 {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: var(--color-dark);
+    margin: 0;
+    line-height: 1.1;
+}
+
+.sales-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 0.3rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(65, 241, 182, 0.16);
+    color: #059669;
+}
+
+.dark-theme-variables .sales-badge {
+    background: rgba(65, 241, 182, 0.2);
+    color: var(--color-success);
+}
+
+.sales-badge span:first-child {
+    font-size: 0.9rem;
+    background: transparent !important;
+    padding: 0 !important;
+    color: inherit !important;
+}
+
+/* Chart Canvas */
+.sales-chart-container {
+    position: relative;
+    height: 115px;
+    width: 100%;
+    margin: 0.2rem 0;
+}
+
+#salesChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Dynamic Stat Row */
+.sales-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0.1rem 0.2rem;
+}
+
+.sales-stat-date {
+    color: var(--color-info-dark);
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+.sales-stat-val {
+    color: var(--color-dark);
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+/* Time Tabs */
+.sales-time-tabs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-light);
+    border-radius: 9999px;
+    padding: 3px;
+    border: 1px solid var(--color-info-light);
+    width: 100%;
+}
+
+.dark-theme-variables .sales-time-tabs {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.sales-time-tab {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-info-dark);
+    padding: 0.3rem 0.5rem;
+    border-radius: 9999px;
+    transition: all 0.25s ease;
+    flex: 1;
+    text-align: center;
+}
+
+.sales-time-tab:hover:not(.active) {
+    color: var(--color-primary);
+}
+
+.sales-time-tab.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(115, 128, 236, 0.45);
+}
+
+/*================= INTERACTIVE EXPENSE KPI CARD =================*/
+main .insights > div.expense-kpi-card {
+    padding: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.6rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 275px;
+}
+
+/* Header */
+.expense-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.expense-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.expense-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.expense-tag .expense-mini-icon {
+    font-size: 1.15rem;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    color: var(--color-danger) !important;
+}
+
+.expense-tag h3 {
+    margin: 0 !important;
+    font-size: 0.85rem !important;
+    font-weight: 600;
+    color: var(--color-info-dark);
+}
+
+.expense-amount-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.expense-amount-row h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--color-dark);
+    margin: 0;
+}
+
+.expense-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(65, 241, 182, 0.15);
+    color: #059669;
+}
+
+.dark-theme-variables .expense-badge {
+    background: rgba(65, 241, 182, 0.2);
+    color: var(--color-success);
+}
+
+.expense-badge span:first-child {
+    font-size: 0.85rem;
+    background: transparent !important;
+    padding: 0 !important;
+    color: inherit !important;
+}
+
+/* Chart Switch (Bar / Doughnut) */
+.chart-switch-container {
+    position: relative;
+    background: var(--color-light);
+    border-radius: 9999px;
+    padding: 2px;
+    width: 62px;
+    height: 32px;
+    cursor: pointer;
+    border: 1px solid var(--color-info-light);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.dark-theme-variables .chart-switch-container {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chart-switch-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, var(--color-danger), #ff5463);
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(255, 119, 130, 0.45);
+}
+
+.chart-switch-container.active .chart-switch-thumb {
+    transform: translateX(30px);
+}
+
+.chart-switch-buttons {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.switch-icon-btn {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: var(--color-info-dark);
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    transition: color 0.3s ease;
+}
+
+.switch-icon-btn span {
+    font-size: 1.05rem;
+    background: transparent !important;
+    padding: 0 !important;
+    color: inherit !important;
+}
+
+.chart-switch-container:not(.active) .switch-icon-btn:first-child,
+.chart-switch-container.active .switch-icon-btn:last-child {
+    color: #ffffff;
+}
+
+/* Chart Container & Glow */
+.expense-chart-container {
+    position: relative;
+    height: 125px;
+    width: 100%;
+    margin: 0.2rem 0;
+}
+
+#chart-glow {
+    position: absolute;
+    bottom: 0;
+    width: 65px;
+    height: 75px;
+    background: radial-gradient(ellipse at bottom, rgba(255, 119, 130, 0.5) 0%, rgba(255, 119, 130, 0.2) 30%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.2s ease, left 0.1s ease;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(14px);
+}
+
+.dark-theme-variables #chart-glow {
+    background: radial-gradient(ellipse at bottom, rgba(255, 119, 130, 0.6) 0%, rgba(255, 119, 130, 0.3) 30%, transparent 70%);
+}
+
+#balanceChart {
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chart-transitioning {
+    opacity: 0.4;
+    transform: scale(0.96);
+}
+
+/* Time Tabs */
+.expense-time-tabs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-light);
+    border-radius: 9999px;
+    padding: 3px;
+    border: 1px solid var(--color-info-light);
+    width: 100%;
+}
+
+.dark-theme-variables .expense-time-tabs {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.time-tab {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-info-dark);
+    padding: 0.3rem 0.5rem;
+    border-radius: 9999px;
+    transition: all 0.25s ease;
+    flex: 1;
+    text-align: center;
+}
+
+.time-tab:hover:not(.active) {
+    color: var(--color-danger);
+}
+
+.time-tab.active {
+    background: var(--color-danger);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(255, 119, 130, 0.45);
+}
+
+/*================= INTERACTIVE INCOME KPI CARD =================*/
+main .insights > div.income-kpi-card {
+    padding: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.6rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 275px;
+}
+
+/* Header */
+.income-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.income-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.income-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.income-tag .income-mini-icon {
+    font-size: 1.15rem;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    color: var(--color-success) !important;
+}
+
+.income-tag h3 {
+    margin: 0 !important;
+    font-size: 0.82rem !important;
+    font-weight: 600;
+    color: var(--color-info-dark);
+}
+
+.income-title-group h1 {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: var(--color-dark);
+    margin: 0;
+    line-height: 1.1;
+}
+
+.income-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 0.3rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(65, 241, 182, 0.16);
+    color: #059669;
+}
+
+.dark-theme-variables .income-badge {
+    background: rgba(65, 241, 182, 0.2);
+    color: var(--color-success);
+}
+
+.income-badge span:first-child {
+    font-size: 0.9rem;
+    background: transparent !important;
+    padding: 0 !important;
+    color: inherit !important;
+}
+
+/* Donut Chart Canvas Container */
+.income-chart-container {
+    position: relative;
+    height: 115px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.1rem 0;
+}
+
+#incomeChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Donut Center Metric Label */
+.income-center-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    text-align: center;
+}
+
+.income-center-percent {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--color-dark);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    transition: all 0.2s ease;
+}
+
+.income-center-sub {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--color-info-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+    transition: all 0.2s ease;
+}
+
+/* Dynamic Legend Breakdown (2x2 grid) */
+.income-legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem 0.6rem;
+    width: 100%;
+    padding: 0.1rem 0.2rem;
+}
+
+.income-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.73rem;
+    cursor: pointer;
+    padding: 0.15rem 0.3rem;
+    border-radius: var(--border-radius-1);
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.income-legend-item:hover {
+    background: var(--color-light);
+    transform: translateY(-1px);
+}
+
+.dark-theme-variables .income-legend-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.income-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.income-legend-dot.dot-received {
+    background: #41f1b6;
+    box-shadow: 0 0 6px rgba(65, 241, 182, 0.5);
+}
+
+.income-legend-dot.dot-pending {
+    background: #ffbb55;
+    box-shadow: 0 0 6px rgba(255, 187, 85, 0.5);
+}
+
+.income-legend-dot.dot-progress {
+    background: #7380ec;
+    box-shadow: 0 0 6px rgba(115, 128, 236, 0.5);
+}
+
+.income-legend-dot.dot-refunds {
+    background: #ff7782;
+    box-shadow: 0 0 6px rgba(255, 119, 130, 0.5);
+}
+
+.income-legend-name {
+    color: var(--color-info-dark);
+    font-weight: 500;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.income-legend-val {
+    color: var(--color-dark);
+    font-weight: 700;
+    font-size: 0.74rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Timeframe Tabs */
+.income-time-tabs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-light);
+    border-radius: 9999px;
+    padding: 3px;
+    border: 1px solid var(--color-info-light);
+    width: 100%;
+}
+
+.dark-theme-variables .income-time-tabs {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.income-time-tab {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-info-dark);
+    padding: 0.3rem 0.5rem;
+    border-radius: 9999px;
+    transition: all 0.25s ease;
+    flex: 1;
+    text-align: center;
+}
+
+.income-time-tab:hover:not(.active) {
+    color: var(--color-success);
+}
+
+.income-time-tab.active {
+    background: #41f1b6;
+    color: #111e88;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(65, 241, 182, 0.4);
 }
 
 main .insights > div .middle {

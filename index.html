@@ -9,6 +9,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp"
         rel="stylesheet"/>
 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <link rel="stylesheet" href="./style.css">
     </head>
     <body>
@@ -136,63 +137,149 @@
                 </div>
 
                 <div class="insights">
-                    <div class="sales">
-                        <span class="material-symbols-sharp">analytics</span>
-                        <div class="middle">
-                            <div class="left">
+                <div class="sales sales-kpi-card">
+                    <!-- Top header with amount and trend badge -->
+                    <div class="sales-header">
+                        <div class="sales-title-group">
+                            <div class="sales-tag">
+                                <span class="material-symbols-sharp sales-mini-icon">insights</span>
                                 <h3>Total Sales</h3>
-                                <h1>$25,024</h1>
                             </div>
-                            <div class="progress">
-                                <svg>
-                                    <circle cx='38' cy='38' r='36'></circle>
-                                </svg>
-                                <div class="number">
-                                    <p>81%</p>
-                                </div>
-                            </div>  
+                            <h1 id="sales-amount">$25,024</h1>
                         </div>
-                        <small class="text-muted">Last 24 Hours</small>
-                    </div>
-                                    <!---SALES END-->
-                <div class="expenses">
-                    <span class="material-symbols-sharp">bar_chart</span>
-                    <div class="middle">
-                        <div class="left">
-                            <h3>Total Expenses</h3>
-                            <h1>$14,160</h1>
-                            </div>
-                            <div class="progress">
-                                <svg>
-                                    <circle cx='38' cy='38' r='36'></circle>
-                                </svg>
-                                <div class="number">
-                                    <p>62%</p>
-                                </div>
-                            </div>  
+                        <div class="sales-badge" id="sales-change">
+                            <span class="material-symbols-sharp">trending_up</span>
+                            <span>+18.4%</span>
                         </div>
-                        <small class="text-muted">Last 24 Hours</small>
                     </div>
-                                    <!----END EXPENSES--->
-                <div class="income">
-                    <span class="material-symbols-sharp">stacked_line_chart</span>
-                    <div class="middle">
-                        <div class="left">
-                            <h3>Total Income</h3>
-                            <h1>$10,864</h1>
-                        </div>
-                        <div class="progress">
-                            <svg>
-                                <circle cx='38' cy='38' r='36'></circle>
-                            </svg>
-                            <div class="number">
-                                <p>44%</p>
-                            </div>
-                        </div>  
+
+                    <!-- Smooth Gradient Area Chart -->
+                    <div class="sales-chart-container">
+                        <canvas id="salesChart"></canvas>
                     </div>
-                    <small class="text-muted">Last 24 Hours</small>
+
+                    <!-- Dynamic Sub-Stat Row (updates on hover / timeframe selection) -->
+                    <div class="sales-stat-row">
+                        <span class="sales-stat-date" id="sales-stat-date">Jun 21</span>
+                        <span class="sales-stat-val" id="sales-stat-val">$840.50</span>
+                    </div>
+
+                    <!-- Timeframe Navigation Tabs -->
+                    <div id="sales-time-tabs" class="sales-time-tabs">
+                        <button type="button" data-time="1M" class="sales-time-tab active">1M</button>
+                        <button type="button" data-time="3M" class="sales-time-tab">3M</button>
+                        <button type="button" data-time="6M" class="sales-time-tab">6M</button>
+                        <button type="button" data-time="1Y" class="sales-time-tab">1Y</button>
+                        <button type="button" data-time="ALL" class="sales-time-tab">ALL</button>
+                    </div>
                 </div>
-                                <!-----END INCOME---->
+                                    <!---SALES END-->
+                <div class="expenses expense-kpi-card">
+                    <!-- Header with amount, trend badge, and chart switch -->
+                    <div class="expense-header">
+                        <div class="expense-title-group">
+                            <div class="expense-tag">
+                                <span class="material-symbols-sharp expense-mini-icon">bar_chart</span>
+                                <h3>Total Expenses</h3>
+                            </div>
+                            <div class="expense-amount-row">
+                                <h1 id="expense-amount">$14,160</h1>
+                                <span class="expense-badge" id="expense-change">
+                                    <span class="material-symbols-sharp">trending_up</span>
+                                    <span>+14.2%</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Chart Type Switcher (Bar vs Doughnut) -->
+                        <div id="chart-switch" class="chart-switch-container" title="Switch between Bar and Doughnut chart">
+                            <div class="chart-switch-thumb"></div>
+                            <div class="chart-switch-buttons">
+                                <button type="button" class="switch-icon-btn active" id="btn-chart-bar" aria-label="Bar chart">
+                                    <span class="material-symbols-sharp">bar_chart</span>
+                                </button>
+                                <button type="button" class="switch-icon-btn" id="btn-chart-donut" aria-label="Doughnut chart">
+                                    <span class="material-symbols-sharp">donut_large</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Chart with Hover Glow -->
+                    <div class="expense-chart-container">
+                        <div id="chart-glow"></div>
+                        <canvas id="balanceChart"></canvas>
+                    </div>
+
+                    <!-- Timeframe Navigation Tabs -->
+                    <div id="time-tabs" class="expense-time-tabs">
+                        <button type="button" data-time="1W" class="time-tab">1W</button>
+                        <button type="button" data-time="1M" class="time-tab active">1M</button>
+                        <button type="button" data-time="6M" class="time-tab">6M</button>
+                        <button type="button" data-time="1Y" class="time-tab">1Y</button>
+                        <button type="button" data-time="ALL" class="time-tab">ALL</button>
+                    </div>
+                </div>
+                                    <!----END EXPENSES--->
+                <div class="income income-kpi-card">
+                    <!-- Top header with amount and trend badge -->
+                    <div class="income-header">
+                        <div class="income-title-group">
+                            <div class="income-tag">
+                                <span class="material-symbols-sharp income-mini-icon">stacked_line_chart</span>
+                                <h3>Total Income</h3>
+                            </div>
+                            <h1 id="income-amount">$10,864</h1>
+                        </div>
+                        <div class="income-badge" id="income-change">
+                            <span class="material-symbols-sharp">trending_up</span>
+                            <span>+24.8%</span>
+                        </div>
+                    </div>
+
+                    <!-- Donut Chart with Center Metric Label -->
+                    <div class="income-chart-container">
+                        <canvas id="incomeChart"></canvas>
+                        <div class="income-center-label">
+                            <span class="income-center-percent" id="income-center-percent">68%</span>
+                            <span class="income-center-sub" id="income-center-sub">Target</span>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Legend Breakdown (2x2 grid) -->
+                    <div class="income-legend" id="income-legend">
+                        <div class="income-legend-item" data-index="0" title="Click or hover to highlight slice">
+                            <span class="income-legend-dot dot-received"></span>
+                            <span class="income-legend-name">Received</span>
+                            <span class="income-legend-val" id="val-received">$7,388</span>
+                        </div>
+                        <div class="income-legend-item" data-index="1" title="Click or hover to highlight slice">
+                            <span class="income-legend-dot dot-pending"></span>
+                            <span class="income-legend-name">Pending</span>
+                            <span class="income-legend-val" id="val-pending">$1,955</span>
+                        </div>
+                        <div class="income-legend-item" data-index="2" title="Click or hover to highlight slice">
+                            <span class="income-legend-dot dot-progress"></span>
+                            <span class="income-legend-name">In Progress</span>
+                            <span class="income-legend-val" id="val-progress">$1,086</span>
+                        </div>
+                        <div class="income-legend-item" data-index="3" title="Click or hover to highlight slice">
+                            <span class="income-legend-dot dot-refunds"></span>
+                            <span class="income-legend-name">Refunds</span>
+                            <span class="income-legend-val" id="val-refunds">$435</span>
+                        </div>
+                    </div>
+
+                    <!-- Timeframe Navigation Tabs -->
+                    <div id="income-time-tabs" class="income-time-tabs">
+                        <button type="button" data-time="1M" class="income-time-tab active">1M</button>
+                        <button type="button" data-time="3M" class="income-time-tab">3M</button>
+                        <button type="button" data-time="6M" class="income-time-tab">6M</button>
+                        <button type="button" data-time="1Y" class="income-time-tab">1Y</button>
+                        <button type="button" data-time="ALL" class="income-time-tab">ALL</button>
+                    </div>
+                </div>
+                <!-----END INCOME---->
 
                 <div class="recent-orders">
                     <h2>Recent Orders</h2>
