@@ -66,7 +66,12 @@ body{
     width: 96%;
     margin: 0 auto;
     gap: 1.8rem;
-    grid-template-columns: 14rem auto 23rem;
+    grid-template-columns: 16rem auto 23rem;
+    transition: grid-template-columns 240ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+body.collapsed-sidebar .container {
+    grid-template-columns: 5.5rem auto 23rem;
 }
 
 a {
@@ -131,8 +136,11 @@ p {
 }
 
 
+/*================= WENSITY COLLAPSIBLE SIDEBAR =================*/
 aside {
     height: 100vh;
+    transition: width 240ms cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
 }
 
 aside .top {
@@ -140,89 +148,378 @@ aside .top {
     align-items: center;
     justify-content: space-between;
     margin-top: 1.4rem;
+    padding: 0 0.8rem;
+    position: relative;
+    height: 3rem;
+    gap: 0.5rem;
 }
 
 aside .logo {
     display: flex;
-    gap: 0.8rem;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    overflow: hidden;
+    flex-shrink: 1;
 }
 
 aside .logo img {
     width: 2rem;
     height: 2rem;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
-aside .sidebar {
-    display: flex;
-    flex-direction: column;
-    height: 86vh;
-    position: relative;
-    top: 3rem;
+aside .logo .logo-text {
+    font-size: 1.25rem;
+    font-weight: 800;
+    white-space: nowrap;
+    transition: opacity 180ms ease, max-width 240ms ease;
+    overflow: hidden;
+    letter-spacing: -0.02em;
 }
 
-aside h3 {
-    font-weight: 500;
-}
-
-
-aside .sidebar a {
-    display: flex;
-    color: var(--color-info-dark);
-    margin-left: 2rem;
-    gap: 1rem;
+/* Animated Uiverse Hamburger (by prakashdc) */
+.hamburger {
+    cursor: pointer;
+    display: inline-flex;
     align-items: center;
-    position: relative;
-    height: 3.7rem;
-    transition: all 300ms ease;
-}
-
-aside .sidebar a span {
-    font-size: 1.6rem;
-    transition: all 300ms ease;
-}
-
-aside .sidebar a:last-child {
-    position: absolute;
-    bottom: 2rem;
-    width: 100%;
-}
-
-aside .sidebar a.active {
-    background: var(--color-light);
-    color: var(--color-primary);
-    margin-left: 0;
-}
-
-aside .sidebar a.active::before {
-    content: "";
-    width: 6px;
-    height: 100%;
-    background: var(--color-primary);
-}
-
-aside .sidebar a.active span {
-    color: var(--color-primary);
-    margin-left: calc(1rem - 3px);
-}
-
-aside .sidebar a:hover {
-    color: var(--color-primary);
-}
-
-aside .sidebar a:hover span {
-    margin-left: 1rem;
-}
-
-aside .sidebar .message-count {
-    background: var(--color-danger);
-    color: var(--color-white);
-    padding: 2px 10px;
-    font-size: 11px;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
     border-radius: var(--border-radius-1);
+    transition: background-color 200ms ease;
+    flex-shrink: 0;
+}
+
+.hamburger:hover {
+    background: var(--color-light);
+}
+
+.hamburger input {
+    display: none;
+}
+
+.hamburger svg {
+    height: 1.75rem;
+    width: 1.75rem;
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hamburger .line {
+    fill: none;
+    stroke: var(--color-dark);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 3;
+    transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+                stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1),
+                stroke 200ms ease;
+}
+
+.hamburger:hover .line {
+    stroke: var(--color-primary);
+}
+
+.hamburger .line-top-bottom {
+    stroke-dasharray: 12 63;
+}
+
+.hamburger input:checked + svg {
+    transform: rotate(-45deg);
+}
+
+.hamburger input:checked + svg .line {
+    stroke: var(--color-primary);
+}
+
+.hamburger input:checked + svg .line-top-bottom {
+    stroke-dasharray: 20 300;
+    stroke-dashoffset: -32.42;
 }
 
 #close-btn {
     display: none;
+}
+
+/* Sidebar Navigation */
+aside .sidebar {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 5.5rem);
+    position: relative;
+    top: 1.2rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 2rem;
+    gap: 0.8rem;
+}
+
+aside .sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+aside .sidebar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 9999px;
+    transition: background-color 0.3s ease;
+}
+aside .sidebar:hover::-webkit-scrollbar-thumb {
+    background: rgba(132, 139, 200, 0.28);
+}
+
+/* Sections */
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.section-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--color-info-dark);
+    text-transform: uppercase;
+    padding: 0.5rem 1rem 0.2rem 1rem;
+    white-space: nowrap;
+    transition: opacity 150ms ease, height 150ms ease;
+}
+
+/* Sidebar Items */
+aside .sidebar a.sidebar-item {
+    display: flex;
+    align-items: center;
+    color: var(--color-info-dark);
+    gap: 1rem;
+    position: relative;
+    height: 3rem;
+    padding: 0 1rem;
+    border-radius: var(--border-radius-2);
+    font-weight: 500;
+    transition: all 180ms cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+aside .sidebar a.sidebar-item .item-icon {
+    font-size: 1.45rem;
+    color: var(--color-info-dark);
+    transition: color 180ms ease;
+    flex-shrink: 0;
+}
+
+aside .sidebar a.sidebar-item .item-label {
+    font-size: 0.88rem;
+    white-space: nowrap;
+    transition: opacity 180ms ease;
+    flex: 1;
+}
+
+aside .sidebar a.sidebar-item:hover {
+    color: var(--color-primary);
+    background: var(--color-light);
+    transform: translateX(3px);
+}
+
+aside .sidebar a.sidebar-item:hover .item-icon {
+    color: var(--color-primary);
+}
+
+/* Active Pill (Wensity smooth surface) */
+aside .sidebar a.sidebar-item.active {
+    background: var(--color-light);
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+aside .sidebar a.sidebar-item.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 20%;
+    height: 60%;
+    width: 4px;
+    background: var(--color-primary);
+    border-radius: 0 4px 4px 0;
+}
+
+aside .sidebar a.sidebar-item.active .item-icon {
+    color: var(--color-primary);
+}
+
+/* Message Count Badge */
+aside .sidebar .message-count {
+    background: var(--color-danger);
+    color: var(--color-white);
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: var(--border-radius-1);
+    transition: all 200ms ease;
+}
+
+/* Sidebar Footer / Logout (Theme Red) */
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--color-light);
+}
+
+aside .sidebar a.sidebar-item.logout-item {
+    color: var(--color-danger);
+    background: rgba(255, 119, 130, 0.06);
+    border: 1px solid rgba(255, 119, 130, 0.15);
+    margin-top: 0.3rem;
+    transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+aside .sidebar a.sidebar-item.logout-item .item-icon {
+    color: var(--color-danger);
+}
+
+aside .sidebar a.sidebar-item.logout-item:hover {
+    color: var(--color-danger);
+    background: rgba(255, 119, 130, 0.15);
+    border-color: rgba(255, 119, 130, 0.3);
+    box-shadow: 0 2px 10px rgba(255, 119, 130, 0.15);
+    transform: translateX(3px);
+}
+
+aside .sidebar a.sidebar-item.logout-item:hover .item-icon {
+    color: var(--color-danger);
+}
+
+aside .sidebar a.sidebar-item.logout-item.active {
+    background: rgba(255, 119, 130, 0.18) !important;
+    color: var(--color-danger) !important;
+    border-color: var(--color-danger);
+    box-shadow: 0 2px 12px rgba(255, 119, 130, 0.22);
+}
+
+aside .sidebar a.sidebar-item.logout-item.active::before {
+    background: var(--color-danger) !important;
+}
+
+aside .sidebar a.sidebar-item.logout-item.active .item-icon {
+    color: var(--color-danger) !important;
+}
+
+body.collapsed-sidebar aside .sidebar a.sidebar-item.logout-item {
+    background: rgba(255, 119, 130, 0.08);
+    border: 1px solid rgba(255, 119, 130, 0.2);
+    transform: none;
+}
+
+body.collapsed-sidebar aside .sidebar a.sidebar-item.logout-item:hover {
+    background: rgba(255, 119, 130, 0.22);
+    border-color: var(--color-danger);
+    transform: none;
+}
+
+/* ========================================================
+   WENSITY COLLAPSED (ICON-RAIL) MODE
+   ======================================================== */
+body.collapsed-sidebar aside {
+    width: 5.5rem;
+}
+
+body.collapsed-sidebar aside .top {
+    justify-content: center;
+    padding: 0;
+}
+
+body.collapsed-sidebar aside .logo .logo-text {
+    opacity: 0;
+    max-width: 0;
+    pointer-events: none;
+}
+
+body.collapsed-sidebar .hamburger {
+    position: absolute;
+    right: -13px;
+    top: 1.2rem;
+    background: var(--color-white);
+    border: 1px solid var(--color-info-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    z-index: 50;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.collapsed-sidebar .hamburger svg {
+    height: 1.45rem;
+    width: 1.45rem;
+}
+
+body.collapsed-sidebar .section-label {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+body.collapsed-sidebar aside .sidebar a.sidebar-item {
+    justify-content: center;
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    margin: 0 auto;
+    transform: none;
+}
+
+body.collapsed-sidebar aside .sidebar a.sidebar-item .item-label {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    display: none;
+}
+
+body.collapsed-sidebar aside .sidebar a.sidebar-item.active::before {
+    display: none;
+}
+
+body.collapsed-sidebar aside .sidebar .message-count {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    padding: 2px 4px;
+    font-size: 9px;
+    min-width: 16px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+/* Tooltips in Collapsed Mode */
+body.collapsed-sidebar aside .sidebar a.sidebar-item::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 14px);
+    top: 50%;
+    transform: translateY(-50%) scale(0.9);
+    background: var(--color-dark);
+    color: var(--color-white);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 180ms cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 2000;
+}
+
+body.collapsed-sidebar aside .sidebar a.sidebar-item:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) scale(1);
 }
 
 main {
@@ -907,13 +1204,40 @@ main .recent-orders .search-wrapper input {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 18rem;
+    width: 18rem !important;
     height: 100vh;
     background: var(--color-white);
     z-index: 1000;
     padding-right: var(--card-padding);
     box-shadow: 1rem 3rem 4rem var(--color-light);
     transition: left 0.3s ease;
+  }
+
+  body.collapsed-sidebar aside {
+    width: 18rem !important;
+  }
+
+  body.collapsed-sidebar aside .logo .logo-text,
+  body.collapsed-sidebar aside .sidebar a.sidebar-item .item-label,
+  body.collapsed-sidebar .section-label {
+    display: block !important;
+    opacity: 1 !important;
+    max-width: none !important;
+  }
+
+  body.collapsed-sidebar aside .sidebar a.sidebar-item {
+    justify-content: flex-start !important;
+    width: 100% !important;
+    padding: 0 1rem !important;
+  }
+
+  body.collapsed-sidebar aside .sidebar a.sidebar-item::after {
+    display: none !important;
+  }
+
+  .hamburger,
+  .sidebar-toggle-btn {
+    display: none !important;
   }
 
   #close-btn {

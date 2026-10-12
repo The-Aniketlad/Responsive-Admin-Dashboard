@@ -13,60 +13,86 @@
     </head>
     <body>
         <div class="container">
-            <aside>
+            <aside id="sidebar-aside">
                 <div class="top">
-                    <div class="logo">
-                        <img src="image_contents/Logo.png">
-                        <h2>Dash<span class="danger">Forge</span></h2>
+                    <div class="logo" title="DashForge">
+                        <img src="image_contents/Logo.png" alt="DashForge Logo">
+                        <h2 class="logo-text">Dash<span class="danger">Forge</span></h2>
                     </div>
+                    <!-- Animated Uiverse Hamburger Toggle -->
+                    <label class="hamburger" id="sidebar-toggle-btn" title="Collapse sidebar">
+                        <input type="checkbox" id="sidebar-toggle-checkbox" checked />
+                        <svg viewBox="0 0 32 32">
+                            <path
+                                d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
+                                class="line line-top-bottom"
+                            ></path>
+                            <path d="M7 16 27 16" class="line"></path>
+                        </svg>
+                    </label>
+                    <!-- Mobile Close Button -->
                     <div class="close" id="close-btn">
                         <span class="material-symbols-sharp">close</span>
                     </div>
                 </div>
 
-                <div class="sidebar">
-                    <a href="#">
-                        <span class="material-symbols-sharp">grid_view</span>
-                        <h3>Dashboard</h3>
-                    </a>
-                    <a href="#" class="active">
-                        <span class="material-symbols-sharp">person</span>
-                        <h3>Customers</h3>
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-sharp">receipt_long</span>
-                        <h3>Orders</h3>
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-sharp">insights</span>
-                        <h3>Analytics</h3>
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-sharp">mail</span>
-                        <h3>Messages</h3>
-                        <span class="message-count">26</span>
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-sharp">inventory</span>
-                        <h3>Products</h3>
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-sharp">report</span>
-                        <h3>Reports</h3>
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-sharp">settings</span>
-                        <h3>Settings</h3>
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-sharp">add</span>
-                        <h3>Add Product</h3>
-                    </a> 
-                    <a href="#">
-                        <span class="material-symbols-sharp">logout</span>
-                        <h3>Logout</h3>
-                    </a>
-                </div>
+                <nav class="sidebar" id="sidebar-nav">
+                    <div class="sidebar-section">
+                        <span class="section-label">MAIN</span>
+                        <a href="#" class="sidebar-item" data-tooltip="Dashboard">
+                            <span class="material-symbols-sharp item-icon">grid_view</span>
+                            <span class="item-label">Dashboard</span>
+                        </a>
+                        <a href="#" class="sidebar-item active" data-tooltip="Customers">
+                            <span class="material-symbols-sharp item-icon">person</span>
+                            <span class="item-label">Customers</span>
+                        </a>
+                        <a href="#" class="sidebar-item" data-tooltip="Orders">
+                            <span class="material-symbols-sharp item-icon">receipt_long</span>
+                            <span class="item-label">Orders</span>
+                        </a>
+                        <a href="#" class="sidebar-item" data-tooltip="Analytics">
+                            <span class="material-symbols-sharp item-icon">insights</span>
+                            <span class="item-label">Analytics</span>
+                        </a>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <span class="section-label">APPS</span>
+                        <a href="#" class="sidebar-item" data-tooltip="Messages">
+                            <span class="material-symbols-sharp item-icon">mail</span>
+                            <span class="item-label">Messages</span>
+                            <span class="message-count">26</span>
+                        </a>
+                        <a href="#" class="sidebar-item" data-tooltip="Products">
+                            <span class="material-symbols-sharp item-icon">inventory</span>
+                            <span class="item-label">Products</span>
+                        </a>
+                        <a href="#" class="sidebar-item" data-tooltip="Reports">
+                            <span class="material-symbols-sharp item-icon">report</span>
+                            <span class="item-label">Reports</span>
+                        </a>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <span class="section-label">SYSTEM</span>
+                        <a href="#" class="sidebar-item" data-tooltip="Settings">
+                            <span class="material-symbols-sharp item-icon">settings</span>
+                            <span class="item-label">Settings</span>
+                        </a>
+                        <a href="#" class="sidebar-item" data-tooltip="Add Product">
+                            <span class="material-symbols-sharp item-icon">add</span>
+                            <span class="item-label">Add Product</span>
+                        </a>
+                    </div>
+
+                    <div class="sidebar-footer">
+                        <a href="#" class="sidebar-item logout-item" data-tooltip="Logout">
+                            <span class="material-symbols-sharp item-icon">logout</span>
+                            <span class="item-label">Logout</span>
+                        </a>
+                    </div>
+                </nav>
             </aside>
 
         <main>

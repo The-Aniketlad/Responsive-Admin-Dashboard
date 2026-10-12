@@ -5,12 +5,73 @@
     const themeToggle = document.querySelector('#theme-toggle');
 
     function setupSidebar() {
-        menuBtn.addEventListener('click', () => {
-            body.classList.add('show-sidebar');
+        const sidebarToggleCheckbox = document.querySelector('#sidebar-toggle-checkbox');
+        const sidebarToggleBtn = document.querySelector('#sidebar-toggle-btn');
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+
+        // Restore collapsed state from localStorage (Desktop)
+        // Note: checked = Expanded (displays Cross X)
+        //       unchecked = Collapsed (displays Hamburger ☰)
+        const isCollapsedSaved = localStorage.getItem('sidebar_collapsed') === 'true';
+        if (isCollapsedSaved && window.innerWidth > 768) {
+            body.classList.add('collapsed-sidebar');
+            if (sidebarToggleCheckbox) sidebarToggleCheckbox.checked = false; // Unchecked shows Hamburger (to open!)
+            if (sidebarToggleBtn) sidebarToggleBtn.setAttribute('title', 'Expand sidebar');
+        } else {
+            body.classList.remove('collapsed-sidebar');
+            if (sidebarToggleCheckbox) sidebarToggleCheckbox.checked = true; // Checked shows Cross (to close!)
+            if (sidebarToggleBtn) sidebarToggleBtn.setAttribute('title', 'Collapse sidebar');
+        }
+
+        // Animated Hamburger Toggle Checkbox
+        if (sidebarToggleCheckbox) {
+            sidebarToggleCheckbox.addEventListener('change', () => {
+                // When user unchecks -> collapse sidebar (and show hamburger)
+                // When user checks -> expand sidebar (and show cross)
+                const isNowCollapsed = !sidebarToggleCheckbox.checked;
+                body.classList.toggle('collapsed-sidebar', isNowCollapsed);
+                localStorage.setItem('sidebar_collapsed', isNowCollapsed);
+                if (sidebarToggleBtn) {
+                    sidebarToggleBtn.setAttribute('title', isNowCollapsed ? 'Expand sidebar' : 'Collapse sidebar');
+                }
+            });
+        }
+
+        // Mobile drawer toggle
+        if (menuBtn) {
+            menuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                body.classList.add('show-sidebar');
+            });
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                body.classList.remove('show-sidebar');
+            });
+        }
+
+        // Close mobile drawer on outside click
+        document.addEventListener('click', (e) => {
+            const aside = document.querySelector('#sidebar-aside');
+            if (body.classList.contains('show-sidebar') && aside && !aside.contains(e.target) && !menuBtn.contains(e.target)) {
+                body.classList.remove('show-sidebar');
+            }
         });
 
-        closeBtn.addEventListener('click', () => {
-            body.classList.remove('show-sidebar');
+        // Interactive tab switching
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                // Auto-close drawer on mobile upon clicking a link
+                if (window.innerWidth <= 768) {
+                    body.classList.remove('show-sidebar');
+                }
+            });
         });
     }
 
