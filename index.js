@@ -2,7 +2,7 @@
     const menuBtn = document.querySelector('#menu-btn');
     const closeBtn = document.querySelector('#close-btn');
     const body = document.body;
-    const themeToggler = document.querySelector(".theme-toggler");
+    const themeToggle = document.querySelector('#theme-toggle');
 
     function setupSidebar() {
         menuBtn.addEventListener('click', () => {
@@ -15,10 +15,23 @@
     }
 
     function setupThemeToggler() {
-        themeToggler.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme-variables');
-            document.getElementById('light-mode-icon').classList.toggle('active');
-            document.getElementById('dark-mode-icon').classList.toggle('active');
+        if (!themeToggle) return;
+
+        // Check saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme-variables');
+            themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                document.body.classList.add('dark-theme-variables');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-theme-variables');
+                localStorage.setItem('theme', 'light');
+            }
         });
     }
 
