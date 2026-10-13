@@ -1272,6 +1272,21 @@ main .insights > div.income-kpi-card {
     line-height: 1.1;
 }
 
+/* KPI Numbers Roll Animation (numbers/number.tsx conversion) */
+#sales-amount,
+#expense-amount,
+#income-amount {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
+}
+
+.number-animating {
+    will-change: contents;
+    display: inline-block;
+}
+
+
 .income-badge {
     display: inline-flex;
     align-items: center;

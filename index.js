@@ -1142,6 +1142,50 @@
         }
     }
 
+    // Dynamic Rolling Number Animation for KPI Cards (numbers/number.tsx conversion)
+    function setupKpiNumberAnimation() {
+        const kpiItems = [
+            { id: 'sales-amount', start: 10000, target: 25024, max: 26200 },
+            { id: 'expense-amount', start: 5000, target: 14160, max: 15200 },
+            { id: 'income-amount', start: 4000, target: 10864, max: 11600 }
+        ];
+
+        const formatCurrency = (num) => {
+            return '$' + new Intl.NumberFormat('en-US').format(num);
+        };
+
+        const animateItem = (item) => {
+            const el = document.getElementById(item.id);
+            if (!el) return;
+
+            const steps = 12;
+            let currentStep = 0;
+            const stepDelta = (item.target - item.start) / steps;
+
+            el.classList.add('number-animating');
+
+            const interval = setInterval(() => {
+                currentStep++;
+
+                if (currentStep <= steps) {
+                    const min = item.start + currentStep * stepDelta;
+                    const max = item.max;
+                    const randomNum = Math.floor(min + Math.random() * (max - min));
+                    el.textContent = formatCurrency(randomNum);
+                } else {
+                    el.textContent = formatCurrency(item.target);
+                    el.classList.remove('number-animating');
+                    clearInterval(interval);
+                }
+            }, 80);
+        };
+
+        // Triggers once on initial page entry (link open) or page refresh
+        setTimeout(() => {
+            kpiItems.forEach(item => animateItem(item));
+        }, 150);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         setupSidebar();
         setupThemeToggler();
@@ -1149,6 +1193,7 @@
         setupSalesChart();
         setupExpenseChart();
         setupIncomeChart();
+        setupKpiNumberAnimation();
         renderOrdersTable();
         setupTableSorting();
         setupOrderSearch();
