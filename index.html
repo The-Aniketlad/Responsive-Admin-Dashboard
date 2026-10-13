@@ -281,32 +281,69 @@
                 </div>
                 <!-----END INCOME---->
 
-                <div class="recent-orders">
-                    <h2>Recent Orders</h2>
-                    <div class="search-wrapper">
-                        <input type="text" id="order-search" placeholder="Search by product name...">
+                <div class="recent-orders table-card">
+                    <div class="table-header-bar">
+                        <div class="table-title-group">
+                            <h2>Recent Orders</h2>
+                            <span class="table-count-badge" id="order-count-badge">7 orders</span>
+                        </div>
+                        <div class="search-wrapper">
+                            <span class="material-symbols-sharp search-icon">search</span>
+                            <input type="text" id="order-search" placeholder="Search orders by product, #ID or status..." autocomplete="off">
+                            <button type="button" id="search-clear-btn" class="search-clear-btn" aria-label="Clear search" style="display: none;">
+                                <span class="material-symbols-sharp">close</span>
+                            </button>
+                        </div>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Product Number</th>
-                                <th>Payment</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-------<tr>
-                                    <td>Foldable Mini Drone</td>
-                                    <td>85631</td>
-                                    <td>Due</td>
-                                    <td class="warning">Pending</td>
-                                    <td class="primary">Details</td>
+
+                    <div class="table-responsive">
+                        <table id="recent-orders-table">
+                            <thead>
+                                <tr>
+                                    <th data-column="productName" class="sortable">
+                                        <div class="th-content">
+                                            <span>Product Name</span>
+                                            <span class="material-symbols-sharp sort-icon">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th data-column="productNumber" class="sortable">
+                                        <div class="th-content">
+                                            <span>Product Number</span>
+                                            <span class="material-symbols-sharp sort-icon">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th data-column="paymentStatus" class="sortable">
+                                        <div class="th-content">
+                                            <span>Payment</span>
+                                            <span class="material-symbols-sharp sort-icon">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th data-column="shipping" class="sortable">
+                                        <div class="th-content">
+                                            <span>Status</span>
+                                            <span class="material-symbols-sharp sort-icon">unfold_more</span>
+                                        </div>
+                                    </th>
+                                    <th class="th-actions">
+                                        <div class="th-content justify-end">
+                                            <span>Actions</span>
+                                        </div>
+                                    </th>
                                 </tr>
-                                --->
-                    </tbody>
-                    </table>
-                    <a href="#">Show All</a>
+                            </thead>
+                            <tbody id="orders-tbody">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer-bar">
+                        <span class="table-footer-info" id="table-footer-info">Showing 7 of 7 orders</span>
+                        <a href="#" class="table-show-all-btn">
+                            <span>Show all orders</span>
+                            <span class="material-symbols-sharp">arrow_forward</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </main>

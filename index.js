@@ -96,46 +96,198 @@
         });
     }
 
-    function populateOrdersTable(orders = Orders) {
-        const tableBody = document.querySelector('table tbody');
-        tableBody.innerHTML = ''; // Clear existing rows
+    let currentOrders = typeof Orders !== 'undefined' ? [...Orders] : [];
+    let sortColumn = null;
+    let sortDirection = 'asc'; // 'asc' | 'desc'
+
+    function renderOrdersTable(orders = currentOrders) {
+        const tableBody = document.querySelector('#recent-orders-table tbody') || document.querySelector('table tbody');
+        const countBadge = document.getElementById('order-count-badge');
+        const footerInfo = document.getElementById('table-footer-info');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = '';
+
+        const totalAvailable = typeof Orders !== 'undefined' ? Orders.length : orders.length;
+
+        if (countBadge) {
+            countBadge.textContent = `${orders.length} order${orders.length !== 1 ? 's' : ''}`;
+        }
+        if (footerInfo) {
+            footerInfo.textContent = `Showing ${orders.length} of ${totalAvailable} orders`;
+        }
+
+        if (orders.length === 0) {
+            const tr = document.createElement('tr');
+            tr.className = 'table-empty-row';
+            tr.innerHTML = `
+                <td colspan="5">
+                    <div class="table-empty-state">
+                        <span class="material-symbols-sharp">search_off</span>
+                        <p>No orders found matching your search</p>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+            return;
+        }
+
         orders.forEach(order => {
             const tr = document.createElement('tr');
-            const trContent = `
-                <td>${order.productName}</td>
-                <td>${order.productNumber}</td>
-                <td>${order.paymentStatus}</td>
-                <td class="${order.shipping === 'Declined' ? 'danger' : order.shipping === 'Pending' ? 'warning' : 'primary'}">${order.shipping}</td>
-                <td class="primary">Details</td>
+
+            // Shipping status badge with icon (Untitled UI BadgeWithIcon)
+            let statusBadge = '';
+            if (order.shipping === 'Delivered') {
+                statusBadge = `
+                    <span class="status-badge delivered">
+                        <span class="material-symbols-sharp">check</span>
+                        <span>Delivered</span>
+                    </span>
+                `;
+            } else if (order.shipping === 'Pending') {
+                statusBadge = `
+                    <span class="status-badge pending">
+                        <span class="material-symbols-sharp">schedule</span>
+                        <span>Pending</span>
+                    </span>
+                `;
+            } else {
+                statusBadge = `
+                    <span class="status-badge declined">
+                        <span class="material-symbols-sharp">close</span>
+                        <span>Declined</span>
+                    </span>
+                `;
+            }
+
+            // Payment pill
+            const payLower = (order.paymentStatus || '').toLowerCase();
+            const paymentBadge = `<span class="payment-badge ${payLower}">${order.paymentStatus}</span>`;
+
+            tr.innerHTML = `
+                <td>
+                    <div class="product-cell">
+                        <span class="product-icon">
+                            <span class="material-symbols-sharp">flight_takeoff</span>
+                        </span>
+                        <span>${order.productName}</span>
+                    </div>
+                </td>
+                <td class="number-cell">#${order.productNumber}</td>
+                <td>${paymentBadge}</td>
+                <td>${statusBadge}</td>
+                <td class="text-right">
+                    <div class="table-actions">
+                        <button type="button" class="btn-action-details" title="View order details">
+                            <span>Details</span>
+                            <span class="material-symbols-sharp" style="font-size: 0.95rem;">chevron_right</span>
+                        </button>
+                    </div>
+                </td>
             `;
-            tr.innerHTML = trContent;
             tableBody.appendChild(tr);
         });
     }
 
-    function updateProgressCircles() {
-        const circles = document.querySelectorAll('.progress svg circle');
-        circles.forEach(circle => {
-            const radius = circle.r.baseVal.value;
-            const circumference = 2 * Math.PI * radius;
-            const p = circle.closest('.progress').querySelector('p').textContent;
-            const percent = parseInt(p.replace('%', ''));
-            const offset = circumference - (percent / 100) * circumference;
-            circle.style.strokeDasharray = circumference;
-            circle.style.strokeDashoffset = offset;
+    function populateOrdersTable(orders = currentOrders) {
+        renderOrdersTable(orders);
+    }
+
+    function setupTableSorting() {
+        const headers = document.querySelectorAll('#recent-orders-table thead th.sortable');
+        headers.forEach(th => {
+            th.addEventListener('click', () => {
+                const col = th.dataset.column;
+                if (!col) return;
+
+                if (sortColumn === col) {
+                    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortColumn = col;
+                    sortDirection = 'asc';
+                }
+
+                // Update header icons and classes
+                headers.forEach(h => {
+                    h.classList.remove('sorted-asc', 'sorted-desc');
+                    const icon = h.querySelector('.sort-icon');
+                    if (icon) icon.textContent = 'unfold_more';
+                });
+
+                th.classList.add(sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                const activeIcon = th.querySelector('.sort-icon');
+                if (activeIcon) {
+                    activeIcon.textContent = sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward';
+                }
+
+                // Sort current orders
+                currentOrders.sort((a, b) => {
+                    let first = a[sortColumn] || '';
+                    let second = b[sortColumn] || '';
+
+                    // Numerical comparison for productNumber
+                    if (sortColumn === 'productNumber') {
+                        const numA = parseInt(first, 10) || 0;
+                        const numB = parseInt(second, 10) || 0;
+                        return sortDirection === 'desc' ? numB - numA : numA - numB;
+                    }
+
+                    // String comparison
+                    const cmp = String(first).localeCompare(String(second));
+                    return sortDirection === 'desc' ? -cmp : cmp;
+                });
+
+                renderOrdersTable(currentOrders);
+            });
         });
     }
 
     function setupOrderSearch() {
         const searchInput = document.getElementById('order-search');
+        const clearBtn = document.getElementById('search-clear-btn');
         if (!searchInput) return;
-        searchInput.addEventListener('keyup', () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            const filteredOrders = Orders.filter(order =>
-                order.productName.toLowerCase().includes(searchTerm)
+
+        const handleSearch = () => {
+            const term = searchInput.value.trim().toLowerCase();
+            if (clearBtn) {
+                clearBtn.style.display = term ? 'flex' : 'none';
+            }
+
+            const baseList = typeof Orders !== 'undefined' ? Orders : [];
+            currentOrders = baseList.filter(order =>
+                order.productName.toLowerCase().includes(term) ||
+                order.productNumber.toLowerCase().includes(term) ||
+                order.paymentStatus.toLowerCase().includes(term) ||
+                order.shipping.toLowerCase().includes(term)
             );
-            populateOrdersTable(filteredOrders);
-        });
+
+            // Re-apply sort if active
+            if (sortColumn) {
+                currentOrders.sort((a, b) => {
+                    let first = a[sortColumn] || '';
+                    let second = b[sortColumn] || '';
+                    if (sortColumn === 'productNumber') {
+                        const numA = parseInt(first, 10) || 0;
+                        const numB = parseInt(second, 10) || 0;
+                        return sortDirection === 'desc' ? numB - numA : numA - numB;
+                    }
+                    const cmp = String(first).localeCompare(String(second));
+                    return sortDirection === 'desc' ? -cmp : cmp;
+                });
+            }
+
+            renderOrdersTable(currentOrders);
+        };
+
+        searchInput.addEventListener('input', handleSearch);
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                handleSearch();
+                searchInput.focus();
+            });
+        }
     }
 
     function setupDatePicker() {
@@ -931,8 +1083,8 @@
         setupSalesChart();
         setupExpenseChart();
         setupIncomeChart();
-        populateOrdersTable();
-        updateProgressCircles();
+        renderOrdersTable();
+        setupTableSorting();
         setupOrderSearch();
     });
 })();
