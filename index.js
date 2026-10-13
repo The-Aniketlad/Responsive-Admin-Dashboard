@@ -314,7 +314,9 @@
         ];
 
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
         let selectedDate = new Date(); // Default selected today
+        selectedDate.setHours(0, 0, 0, 0);
         let currentMonth = selectedDate.getMonth();
         let currentYear = selectedDate.getFullYear();
 
@@ -343,6 +345,22 @@
             monthYearSpan.textContent = `${months[currentMonth]} ${currentYear}`;
             daysContainer.innerHTML = '';
 
+            // Restrict forward navigation to future months
+            const isCurrentOrFutureMonth = (
+                currentYear > today.getFullYear() ||
+                (currentYear === today.getFullYear() && currentMonth >= today.getMonth())
+            );
+
+            if (isCurrentOrFutureMonth) {
+                nextBtn.disabled = true;
+                nextBtn.classList.add('disabled');
+                nextBtn.setAttribute('aria-disabled', 'true');
+            } else {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('disabled');
+                nextBtn.removeAttribute('aria-disabled');
+            }
+
             const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
             const totalDaysCurrent = new Date(currentYear, currentMonth + 1, 0).getDate();
             const totalDaysPrev = new Date(currentYear, currentMonth, 0).getDate();
@@ -354,17 +372,32 @@
                 btn.type = 'button';
                 btn.className = 'calendar-day-btn other-month';
                 btn.textContent = dayNum;
-                btn.addEventListener('click', () => {
-                    currentMonth--;
-                    if (currentMonth < 0) {
-                        currentMonth = 11;
-                        currentYear--;
-                    }
-                    selectedDate = new Date(currentYear, currentMonth, dayNum);
-                    valueSpan.textContent = formatDate(selectedDate);
-                    renderCalendar();
-                    setTimeout(() => togglePopover(false), 150);
-                });
+
+                let prevM = currentMonth - 1;
+                let prevY = currentYear;
+                if (prevM < 0) {
+                    prevM = 11;
+                    prevY--;
+                }
+                const prevCellDate = new Date(prevY, prevM, dayNum);
+                prevCellDate.setHours(0, 0, 0, 0);
+                const isFuture = prevCellDate.getTime() > today.getTime();
+
+                if (isFuture) {
+                    btn.classList.add('disabled', 'future-day');
+                    btn.disabled = true;
+                    btn.setAttribute('aria-disabled', 'true');
+                } else {
+                    btn.addEventListener('click', () => {
+                        currentMonth = prevM;
+                        currentYear = prevY;
+                        selectedDate = new Date(currentYear, currentMonth, dayNum);
+                        selectedDate.setHours(0, 0, 0, 0);
+                        valueSpan.textContent = formatDate(selectedDate);
+                        renderCalendar();
+                        setTimeout(() => togglePopover(false), 150);
+                    });
+                }
                 daysContainer.appendChild(btn);
             }
 
@@ -374,6 +407,10 @@
                 btn.type = 'button';
                 btn.className = 'calendar-day-btn';
                 btn.textContent = day;
+
+                const cellDate = new Date(currentYear, currentMonth, day);
+                cellDate.setHours(0, 0, 0, 0);
+                const isFuture = cellDate.getTime() > today.getTime();
 
                 const isToday = (
                     day === today.getDate() &&
@@ -390,12 +427,20 @@
                 );
                 if (isSelected) btn.classList.add('selected');
 
-                btn.addEventListener('click', () => {
-                    selectedDate = new Date(currentYear, currentMonth, day);
-                    valueSpan.textContent = formatDate(selectedDate);
-                    renderCalendar();
-                    setTimeout(() => togglePopover(false), 150);
-                });
+                if (isFuture) {
+                    btn.classList.add('disabled', 'future-day');
+                    btn.disabled = true;
+                    btn.setAttribute('aria-disabled', 'true');
+                    btn.title = "Future dates cannot be selected";
+                } else {
+                    btn.addEventListener('click', () => {
+                        selectedDate = new Date(currentYear, currentMonth, day);
+                        selectedDate.setHours(0, 0, 0, 0);
+                        valueSpan.textContent = formatDate(selectedDate);
+                        renderCalendar();
+                        setTimeout(() => togglePopover(false), 150);
+                    });
+                }
 
                 daysContainer.appendChild(btn);
             }
@@ -408,17 +453,32 @@
                 btn.type = 'button';
                 btn.className = 'calendar-day-btn other-month';
                 btn.textContent = nextDay;
-                btn.addEventListener('click', () => {
-                    currentMonth++;
-                    if (currentMonth > 11) {
-                        currentMonth = 0;
-                        currentYear++;
-                    }
-                    selectedDate = new Date(currentYear, currentMonth, nextDay);
-                    valueSpan.textContent = formatDate(selectedDate);
-                    renderCalendar();
-                    setTimeout(() => togglePopover(false), 150);
-                });
+
+                let nextM = currentMonth + 1;
+                let nextY = currentYear;
+                if (nextM > 11) {
+                    nextM = 0;
+                    nextY++;
+                }
+                const nextCellDate = new Date(nextY, nextM, nextDay);
+                nextCellDate.setHours(0, 0, 0, 0);
+                const isFuture = nextCellDate.getTime() > today.getTime();
+
+                if (isFuture) {
+                    btn.classList.add('disabled', 'future-day');
+                    btn.disabled = true;
+                    btn.setAttribute('aria-disabled', 'true');
+                } else {
+                    btn.addEventListener('click', () => {
+                        currentMonth = nextM;
+                        currentYear = nextY;
+                        selectedDate = new Date(currentYear, currentMonth, nextDay);
+                        selectedDate.setHours(0, 0, 0, 0);
+                        valueSpan.textContent = formatDate(selectedDate);
+                        renderCalendar();
+                        setTimeout(() => togglePopover(false), 150);
+                    });
+                }
                 daysContainer.appendChild(btn);
             }
         }
@@ -442,6 +502,12 @@
 
         nextBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (nextBtn.disabled) return;
+            const canGoNext = (
+                currentYear < today.getFullYear() ||
+                (currentYear === today.getFullYear() && currentMonth < today.getMonth())
+            );
+            if (!canGoNext) return;
             currentMonth++;
             if (currentMonth > 11) {
                 currentMonth = 0;
