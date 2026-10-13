@@ -333,39 +333,119 @@
                 </div>
             </div>
                             <!-----END TOP-->
-            <div class="recent-updates">
-                <h2>Recent Updates</h2>
-                <div class="updates">
-                    <div class="update">
-                        <div class="profile-photo">
-                            <img src="image_contents/profile-2.jpg" alt="">
-                        </div>
-                        <div class="message">
-                            <p><b>Mister Beast</b> received his order of Night lion tech GPS drone</p>
-                            <small class="text-muted">2 Minutes Ago</small>
-                        </div>
+            <div class="recent-updates activity-card">
+                <div class="activity-header">
+                    <div class="activity-title-group">
+                        <h2>Recent Activity</h2>
+                        <p class="activity-subtitle">Recent orders & shipment updates</p>
                     </div>
-                    <div class="update">
-                        <div class="profile-photo">
-                            <img src="image_contents/profile-3.jpg" alt="">
-                        </div>
-                        <div class="message">
-                            <p><b>Technical Guruji</b> received his order of Night lion tech GPS drone</p>
-                            <small class="text-muted">2 Minutes Ago</small>
-                        </div>
+                    <div class="activity-live-badge" title="Live store order updates">
+                        <span class="live-pulse-dot"></span>
+                        <span>Live</span>
                     </div>
-                    <div class="update">
-                        <div class="profile-photo">
-                            <img src="image_contents/profile-4.jpg" alt="">
-                        </div>
-                        <div class="message">
-                            <p><b>Elon Musk</b> received his order of Night lion tech GPS drone</p>
-                            <small class="text-muted">2 Minutes Ago</small>
-                        </div>
+                </div>
+                <div class="updates activity-box">
+                    <ul class="activity-list">
+                        <li class="activity-item" data-id="order-foldable">
+                            <div class="activity-avatar-wrapper">
+                                <img src="image_contents/profile-2.jpg" alt="Mister Beast" class="activity-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <span class="activity-avatar-fallback">MB</span>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-message">
+                                    <span class="activity-actor">Mister Beast</span>
+                                    <span class="activity-action">received his order of</span>
+                                    <span class="activity-badge badge-success">
+                                        <span class="material-symbols-sharp badge-icon">check_circle</span>
+                                        <span>Foldable Mini Drone</span>
+                                    </span>
+                                </p>
+                            </div>
+                            <span class="activity-time">2 Min Ago</span>
+                        </li>
+
+                        <li class="activity-item" data-id="order-dji">
+                            <div class="activity-avatar-wrapper">
+                                <img src="image_contents/profile-3.jpg" alt="Technical Guruji" class="activity-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <span class="activity-avatar-fallback">TG</span>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-message">
+                                    <span class="activity-actor">Technical Guruji</span>
+                                    <span class="activity-action">placed an order for</span>
+                                    <span class="activity-badge badge-primary">
+                                        <span class="material-symbols-sharp badge-icon">flight_takeoff</span>
+                                        <span>DJI Air 25</span>
+                                    </span>
+                                </p>
+                            </div>
+                            <span class="activity-time">18 Min Ago</span>
+                        </li>
+
+                        <li class="activity-item" data-id="order-gps">
+                            <div class="activity-avatar-wrapper">
+                                <img src="image_contents/profile-4.jpg" alt="Elon Musk" class="activity-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <span class="activity-avatar-fallback">EM</span>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-message">
+                                    <span class="activity-actor">Elon Musk</span>
+                                    <span class="activity-action">received delivery of</span>
+                                    <span class="activity-badge badge-success">
+                                        <span class="material-symbols-sharp badge-icon">verified</span>
+                                        <span>GPS 4K Drone</span>
+                                    </span>
+                                </p>
+                            </div>
+                            <span class="activity-time">1 Hour Ago</span>
+                        </li>
+
+                        <li class="activity-item" data-id="order-ruko">
+                            <div class="activity-avatar-wrapper">
+                                <img src="https://cdn.21st.dev/assets/mirror/ff/ff69e06d986306dd387813d2e4f8afda62c6ee5f9fbc7bb83dc69b323b9d3869.jpg" alt="Priya Nair" class="activity-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <span class="activity-avatar-fallback">PN</span>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-message">
+                                    <span class="activity-actor">Priya Nair</span>
+                                    <span class="activity-action">payment pending for</span>
+                                    <span class="activity-badge badge-warning">
+                                        <span class="material-symbols-sharp badge-icon">schedule</span>
+                                        <span>Ruko F11 Pro Drone</span>
+                                    </span>
+                                </p>
+                            </div>
+                            <span class="activity-time">3 Hours Ago</span>
+                        </li>
+
+                        <li class="activity-item" data-id="order-larvender">
+                            <div class="activity-avatar-wrapper">
+                                <img src="https://cdn.21st.dev/assets/mirror/51/511e8a28ad384d1692e249771c5da88414ce778aec74ea21451d519db92e0038.jpg" alt="Leo Tanaka" class="activity-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <span class="activity-avatar-fallback">LT</span>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-message">
+                                    <span class="activity-actor">Leo Tanaka</span>
+                                    <span class="activity-action">requested refund for</span>
+                                    <span class="activity-badge badge-danger">
+                                        <span class="material-symbols-sharp badge-icon">replay</span>
+                                        <span>LARVENDER KF102</span>
+                                    </span>
+                                </p>
+                            </div>
+                            <span class="activity-time">Yesterday</span>
+                        </li>
+                    </ul>
+
+                    <div class="activity-footer">
+                        <a href="#" class="view-all-activity">
+                            <span>View all orders</span>
+                            <span class="material-symbols-sharp">arrow_forward</span>
+                        </a>
                     </div>
                 </div>
             </div>
-                            <!----END UPDATES-->
+            <!----END RECENT ACTIVITY---->
             <div class="sales-analytics">
                 <h2>Sales Analytics</h2>
                 <div class="item online">
