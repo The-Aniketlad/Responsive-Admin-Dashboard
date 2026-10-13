@@ -1143,7 +1143,7 @@
     }
 
     // Dynamic Rolling Number Animation for KPI Cards (numbers/number.tsx conversion)
-    function setupKpiNumberAnimation() {
+    function runKpiNumberAnimation() {
         const kpiItems = [
             { id: 'sales-amount', start: 10000, target: 25024, max: 26200 },
             { id: 'expense-amount', start: 5000, target: 14160, max: 15200 },
@@ -1180,20 +1180,57 @@
             }, 80);
         };
 
-        // Triggers once on initial page entry (link open) or page refresh
-        setTimeout(() => {
-            kpiItems.forEach(item => animateItem(item));
-        }, 150);
+        kpiItems.forEach(item => animateItem(item));
+    }
+
+    // Cinematic Website Logo Intro Scene (First Visit Only, Pure Custom Animation - Watermark-Free)
+    function setupIntroLoader() {
+        const introOverlay = document.getElementById('website-intro-overlay');
+
+        // Check if intro was already seen in this session
+        const introSeen = sessionStorage.getItem('dashboard_intro_seen');
+
+        if (!introOverlay) {
+            setTimeout(runKpiNumberAnimation, 150);
+            return;
+        }
+
+        if (introSeen === 'true') {
+            introOverlay.style.display = 'none';
+            introOverlay.remove();
+            // User refreshed or navigated during session: immediately trigger number animation
+            setTimeout(runKpiNumberAnimation, 150);
+            return;
+        }
+
+        let isDismissed = false;
+        function dismissIntro() {
+            if (isDismissed) return;
+            isDismissed = true;
+            introOverlay.classList.add('fade-out');
+            sessionStorage.setItem('dashboard_intro_seen', 'true');
+
+            // Trigger KPI number animation right as dashboard comes into view!
+            setTimeout(runKpiNumberAnimation, 200);
+
+            setTimeout(() => {
+                introOverlay.style.display = 'none';
+                introOverlay.remove();
+            }, 850);
+        }
+
+        // Cinematic scene plays for 2.6 seconds, then smoothly dissolves into dashboard
+        setTimeout(dismissIntro, 2600);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        setupIntroLoader();
         setupSidebar();
         setupThemeToggler();
         setupDatePicker();
         setupSalesChart();
         setupExpenseChart();
         setupIncomeChart();
-        setupKpiNumberAnimation();
         renderOrdersTable();
         setupTableSorting();
         setupOrderSearch();
