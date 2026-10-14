@@ -220,4 +220,3 @@ No build tools or heavy node servers required! Simply run directly in your brows
 - Project Repository: [Responsive-Admin-Dashboard](https://github.com/The-Aniketlad/Responsive-Admin-Dashboard)
 
 ---
-⭐ *If you like this project, feel free to give it a star on GitHub!*
